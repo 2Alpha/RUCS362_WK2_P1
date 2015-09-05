@@ -15,7 +15,7 @@
 using namespace std;
 
 void ProgramDescription();
-void readDataFile1 (string inputFileName, string studentID[], int credits[]);
+void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[]);
 
 void StoreUndergradData (string[], int[]);
 
@@ -26,10 +26,12 @@ const string FILE_1_NAME = "CREDITS.txt"; // File name for input file
 int main()
 {
 	string StudentIDList[MAX_ENTRIES];
-	int StudentCreditsList[MAX_ENTRIES];
+	char ClassLevelList[MAX_ENTRIES];
+	int CreditsList[MAX_ENTRIES];
+
 	
 	ProgramDescription();
-	readDataFile1(FILE_1_NAME, StudentIDList, StudentCreditsList);
+	readDataFile1(FILE_1_NAME, StudentIDList, ClassLevelList, CreditsList);
 
 
 
@@ -60,13 +62,13 @@ void ProgramDescription()
 //  INPUT:        Parameters:  
 //  OUTPUT: 	  Return value: fileOpenSuccess
 //*************************************************************************
-void readDataFile1(string inputFileName, string studentID[], int credits[])
+void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[])
 {
 	ifstream inputFile;                      // input file stream variable
 	bool fileOpenSuccess; 
 
 
-	int studentIDIndex = 0;
+	int studentIndex = 0;
 	inputFile.open(inputFileName.c_str());       // open the file
 
 	if (!inputFile)
@@ -89,10 +91,18 @@ void readDataFile1(string inputFileName, string studentID[], int credits[])
 	while (inputFile)
 	{
 		cout << "happy" << endl;
-		inputFile >> studentID[studentIDIndex];
-		cout << studentID[studentIDIndex];
+		inputFile >> studentID[studentIndex];
+		inputFile >> studentClassLevel[studentIndex];
+		inputFile >> credits[studentIndex]; 
+
+		
+		cout << endl; 
+		cout << studentID[studentIndex] << endl; 
+		cout << studentClassLevel[studentIndex] << endl; 
+		cout << credits[studentIndex] << endl; 
+
 		system("PAUSE");
-		exit(5);
+		exit(1);
 
 	}
 
