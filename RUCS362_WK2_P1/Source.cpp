@@ -18,8 +18,14 @@ void ProgramDescription();
 void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[]);
 
 void StoreUndergradData (string[], int[]);
+void covertCredits(int inputCredit);
 
-const int MAX_ENTRIES = 1000; // Max number of student profiles that can be stored
+const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
+const int FRESHMAN_BOUNDARY = 32; 
+const int SOPHOMORE_BOUNDARY = 63;
+const int JUNIOR_BOUNDARY = 95;
+const int SENIOR_BOUNDARY = 95;
+
 
 const string FILE_1_NAME = "CREDITS.txt"; // File name for input file
 
@@ -65,8 +71,11 @@ void ProgramDescription()
 void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[])
 {
 	ifstream inputFile;                      // input file stream variable
-	bool fileOpenSuccess; 
+	bool fileOpenSuccess;
 
+	string tempStudentID;
+	char tempStudentClassLevel;
+	int tempCredits;
 
 	int studentIndex = 0;
 	inputFile.open(inputFileName.c_str());       // open the file
@@ -79,7 +88,7 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 		system("PAUSE");
 		exit(5);
 	}
-	
+
 	else
 	{
 		fileOpenSuccess = true;
@@ -88,26 +97,57 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 		cout << endl;
 	}
 
-	while (inputFile)
+
+
+	while ((inputFile) && (studentIndex < MAX_ENTRIES))
 	{
-		cout << "happy" << endl;
-		inputFile >> studentID[studentIndex];
-		inputFile >> studentClassLevel[studentIndex];
-		inputFile >> credits[studentIndex]; 
+		inputFile >> tempStudentID;
+		inputFile >> tempStudentClassLevel;
+		inputFile >> tempCredits;
+		inputFile.ignore(100, '\n');
 
-		
-		cout << endl; 
-		cout << studentID[studentIndex] << endl; 
-		cout << studentClassLevel[studentIndex] << endl; 
-		cout << credits[studentIndex] << endl; 
 
-		system("PAUSE");
-		exit(1);
+		if ((tempStudentClassLevel == 'U') )
+		{
+			studentID[studentIndex] = tempStudentID;
+			studentClassLevel[studentIndex] = tempStudentClassLevel; 
+			credits[studentIndex] = tempCredits; 
+			studentIndex++;
+		}
+
+		 if (studentIndex >= MAX_ENTRIES)
+		{
+			cout << "Alert! Maximum number of Entries (" << MAX_ENTRIES << ") has been reached" << endl << endl;
+		}
+
+
 
 	}
 
 
+	
+	for (int index = 0; index < studentIndex; index++)
+	{
+		cout << "student id        " << studentID[index] << endl;
+		cout << "class Level       " << studentClassLevel[index] << endl;
+		cout << "student Credits   " << credits[index] << endl;
+		cout << endl;
+	}
 
+
+		inputFile.close();
+
+}
+void covertCredits(int inputCredit)
+{
+	enum classLevel { Freshman, Sophomore, Junior, Senior };
+
+	classLevel classDesignation; 
+
+	if (inputCredit < FRESHMAN_BOUNDARY)
+	{
+		classDesignation = Freshman;
+	}
 
 
 }
