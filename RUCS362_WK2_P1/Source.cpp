@@ -14,11 +14,16 @@
 
 using namespace std;
 
+enum classLevel { Freshman, Sophomore, Junior, Senior, TooKool4Skool };
+classLevel convertCredits(int inputCredit); 
+
+string convertClassLevel2String(classLevel enumeratedTypeValue);
+
 void ProgramDescription();
-void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[]);
+void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], string classLevelAsString[], int credits[]);
 
 void StoreUndergradData (string[], int[]);
-void covertCredits(int inputCredit);
+
 
 const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
 const int FRESHMAN_BOUNDARY = 32; 
@@ -32,12 +37,14 @@ const string FILE_1_NAME = "CREDITS.txt"; // File name for input file
 int main()
 {
 	string StudentIDList[MAX_ENTRIES];
+	string clasLevelAsString[MAX_ENTRIES];
 	char ClassLevelList[MAX_ENTRIES];
 	int CreditsList[MAX_ENTRIES];
 
+
 	
 	ProgramDescription();
-	readDataFile1(FILE_1_NAME, StudentIDList, ClassLevelList, CreditsList);
+	readDataFile1(FILE_1_NAME, StudentIDList, ClassLevelList, clasLevelAsString, CreditsList);
 
 
 
@@ -68,7 +75,7 @@ void ProgramDescription()
 //  INPUT:        Parameters:  
 //  OUTPUT: 	  Return value: fileOpenSuccess
 //*************************************************************************
-void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], int credits[])
+void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], string classLevelAsString[], int credits[])
 {
 	ifstream inputFile;                      // input file stream variable
 	bool fileOpenSuccess;
@@ -111,7 +118,8 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 		{
 			studentID[studentIndex] = tempStudentID;
 			studentClassLevel[studentIndex] = tempStudentClassLevel; 
-			credits[studentIndex] = tempCredits; 
+			credits[studentIndex] = tempCredits;
+			classLevelAsString[studentIndex] = convertClassLevel2String(convertCredits(credits[studentIndex]));
 			studentIndex++;
 		}
 
@@ -128,26 +136,74 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 	
 	for (int index = 0; index < studentIndex; index++)
 	{
-		cout << "student id        " << studentID[index] << endl;
-		cout << "class Level       " << studentClassLevel[index] << endl;
-		cout << "student Credits   " << credits[index] << endl;
+		cout << "student id           " << studentID[index] << endl;
+		cout << "class Level          " << studentClassLevel[index] << endl;
+		cout << "student Credits      " << credits[index] << endl;
+		cout << classLevelAsString[index] << endl; 
 		cout << endl;
 	}
 
 
+
 		inputFile.close();
 
-}
-void covertCredits(int inputCredit)
-{
-	enum classLevel { Freshman, Sophomore, Junior, Senior };
 
+		//cout << "converted credits = " << convertCredits(96) << endl;
+		
+		//cout << convertClassLevel2String(convertCredits(5)) << endl;
+
+}
+
+classLevel convertCredits(int inputCredit)
+{
+	
 	classLevel classDesignation; 
 
 	if (inputCredit < FRESHMAN_BOUNDARY)
 	{
 		classDesignation = Freshman;
 	}
+
+	else if ((inputCredit >= FRESHMAN_BOUNDARY) && (inputCredit <= SOPHOMORE_BOUNDARY))
+	{
+		classDesignation = Sophomore;
+	}
+
+	else if ((inputCredit > SOPHOMORE_BOUNDARY) && (inputCredit <= JUNIOR_BOUNDARY))
+	{
+		classDesignation = Junior;
+	}
+
+	else if (inputCredit > SENIOR_BOUNDARY)
+	{
+		classDesignation = Senior;
+	}
+
+	else
+	{
+		classDesignation = TooKool4Skool;
+	}
+
+	return classDesignation; 
+
+}
+
+string convertClassLevel2String(classLevel enumeratedTypeValue)
+{
+	string classLevelAsString; 
+
+	switch (enumeratedTypeValue)
+	{
+	case Freshman:	classLevelAsString = "Freshman";
+		break;
+	case Sophomore:	classLevelAsString = "Sophmore";
+		break;
+	case Junior:	classLevelAsString = "Junior";
+		break;
+	case Senior:	classLevelAsString = "Senior";
+	}
+
+	return classLevelAsString; 
 
 
 }
