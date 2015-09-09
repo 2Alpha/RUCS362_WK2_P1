@@ -26,7 +26,10 @@ void StoreUndergradData (string[], int[]);
 
 void selectSortByStudentID(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
 void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
-void displayStudentSearch(int numOfItems, string alphaNumericList[]);
+void StudentIDNumsOnFile(int numOfItems, string alphaNumericList[]);
+
+void studentIDSearch();
+void errorCheckStudentID(string studentIDEntered);
 
 
 const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
@@ -55,7 +58,8 @@ int main()
 	readDataFile1(INPUT_FILE_1_NAME, StudentIDList, ClassLevelList, classLevelAsOVList, clasLevelAsString, CreditsList, numOfEntries);
 	selectSortByStudentID(numOfEntries, StudentIDList, classLevelAsOVList);
 	createSortedTextFile(numOfEntries, StudentIDList, classLevelAsOVList);
-	displayStudentSearch(numOfEntries, StudentIDList);
+	StudentIDNumsOnFile(numOfEntries, StudentIDList);
+	studentIDSearch();
 
 
 	system("PAUSE");
@@ -274,7 +278,7 @@ void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel 
 
 }
 
-void displayStudentSearch (int numOfItems, string alphaNumericList[])
+void StudentIDNumsOnFile (int numOfItems, string alphaNumericList[])
 {
 	int numOfColums = MAX_COLUMNS;
 	
@@ -292,5 +296,59 @@ void displayStudentSearch (int numOfItems, string alphaNumericList[])
 		cout << endl; 
 	}
 
+
+}
+
+void studentIDSearch()
+{
+	string look4StudentID; 
+	
+	cout << endl; 
+	cout << "Enter ID number of student to find (or X to exit): "; 
+	cin >> look4StudentID; 
+
+
+	errorCheckStudentID(look4StudentID);
+
+
+
+
+}
+
+void errorCheckStudentID(string studentIDEntered)
+{
+	bool errorCheckGood; 
+	int length; 
+
+	length = studentIDEntered.length(); 
+	
+	if (length < 8)
+	{
+		cout << "ERROR! Input " << studentIDEntered << " is not long enough. System Expected 8 characters." << endl << endl;
+		errorCheckGood = false; 
+	}
+
+	if (length > 8)
+	{
+		cout << "ERROR! Input " << studentIDEntered << " is too long. System Expected 8 characters." << endl;
+		errorCheckGood = false;
+	}
+		
+	if (length = 8)
+	{
+		errorCheckGood = true;
+	}
+
+	for (int index = 0; index <2; index++)
+	{
+		if (isalpha(studentIDEntered[index]))
+		{
+			errorCheckGood = true;
+		}
+
+		else errorCheckGood = false;
+		 
+	}
+	
 
 }
