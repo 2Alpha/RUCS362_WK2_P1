@@ -24,12 +24,15 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 
 void StoreUndergradData (string[], int[]);
 
-void selectSortByStudentID(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
+void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
+void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
+
 void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
 void StudentIDNumsOnFile(int numOfItems, string alphaNumericList[]);
+int runBinarySearch(string target, string searchList[], int listSize);
 
-void studentIDSearch();
-void errorCheckStudentID(string studentIDEntered);
+string studentIDSearch();
+bool errorCheckStudentID(string studentIDEntered);
 
 
 const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
@@ -38,6 +41,7 @@ const int SOPHOMORE_BOUNDARY = 63;
 const int JUNIOR_BOUNDARY = 95;
 const int SENIOR_BOUNDARY = 95;
 const int MAX_COLUMNS = 5; 
+const int NOT_FOUND = -1;
 
 
 const string INPUT_FILE_1_NAME = "CREDITS.txt"; // File name for input file
@@ -51,15 +55,25 @@ int main()
 	classLevel classLevelAsOVList[MAX_ENTRIES];
 	int CreditsList[MAX_ENTRIES];
 	int numOfEntries;
+	int data2displayLocation; 
 
 
 	
 	ProgramDescription();
 	readDataFile1(INPUT_FILE_1_NAME, StudentIDList, ClassLevelList, classLevelAsOVList, clasLevelAsString, CreditsList, numOfEntries);
-	selectSortByStudentID(numOfEntries, StudentIDList, classLevelAsOVList);
+	
+	sortStudentIDDesending(numOfEntries, StudentIDList, classLevelAsOVList);
 	createSortedTextFile(numOfEntries, StudentIDList, classLevelAsOVList);
+
+	
+	
+	
+	sortStudentIDAscending(numOfEntries, StudentIDList, classLevelAsOVList);
 	StudentIDNumsOnFile(numOfEntries, StudentIDList);
-	studentIDSearch();
+
+	data2displayLocation = runBinarySearch(studentIDSearch(), StudentIDList, numOfEntries);
+	
+	
 
 
 	system("PAUSE");
@@ -220,7 +234,7 @@ string convertClassLevel2String(classLevel enumeratedTypeValue)
 }
 
 // Implementation of a selection sort
-void selectSortByStudentID(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[])
+void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[])
 {
 	int currentTop,            // Current top of unsorted list
 		tryIndex,            // Position to compare value to
@@ -237,7 +251,7 @@ void selectSortByStudentID(int numOfItems, string alphaNumericList[], classLevel
 
 		// find smallest value from currentTop down
 		for (tryIndex = currentTop + 1; tryIndex < numOfItems; tryIndex++)
-			if (alphaNumericList[tryIndex] > alphaNumericList[minPosition]) // Flip Sign to invert sort order
+			if (alphaNumericList[tryIndex] > alphaNumericList[minPosition]) // Flip Sign to invert sort order,  > = desending
 				minPosition = tryIndex;
 
 		// if smallest not at currentTop, swap with currentTop
@@ -251,6 +265,52 @@ void selectSortByStudentID(int numOfItems, string alphaNumericList[], classLevel
 
 			alphaNumericList[minPosition] = tempString;
 			enumeratedTypeValue[minPosition] = tempClassLevel;
+
+
+		}   // end swap
+
+	}  // end for
+
+	return;
+} // end selectionSort
+
+
+void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[], string classLevelAsString[])
+{
+	int currentTop,            // Current top of unsorted list
+		tryIndex,            // Position to compare value to
+		minPosition;       // Position of smallest value
+
+	string tempString;              // Temp value for swapping
+	string tempClassLevelAsString;
+	classLevel tempClassLevel;
+
+
+	// for each item in the list (top to bottom)
+	for (currentTop = 0; currentTop < numOfItems - 1; currentTop++)
+	{
+
+		minPosition = currentTop;      // start with current top as smallest value
+
+		// find smallest value from currentTop down
+		for (tryIndex = currentTop + 1; tryIndex < numOfItems; tryIndex++)
+			if (alphaNumericList[tryIndex] < alphaNumericList[minPosition]) // Flip Sign to invert sort order,  < = assending
+				minPosition = tryIndex;
+
+		// if smallest not at currentTop, swap with currentTop
+		if (minPosition != currentTop)
+		{
+			tempString = alphaNumericList[currentTop];
+			tempClassLevel = enumeratedTypeValue[currentTop];
+			tempClassLevelAsString = classLevelAsString[currentTop];
+
+			alphaNumericList[currentTop] = alphaNumericList[minPosition];
+			enumeratedTypeValue[currentTop] = enumeratedTypeValue[minPosition];
+			classLevelAsString[currentTop] = classLevelAsString[minPosition];
+
+			alphaNumericList[minPosition] = tempString;
+			enumeratedTypeValue[minPosition] = tempClassLevel;
+			classLevelAsString[minPosition] = tempClassLevelAsString;
 
 
 		}   // end swap
@@ -299,56 +359,198 @@ void StudentIDNumsOnFile (int numOfItems, string alphaNumericList[])
 
 }
 
-void studentIDSearch()
+string studentIDSearch()
 {
-	string look4StudentID; 
+	string look4StudentID;
+	string validatedStudentID;
+	bool errorDetected; 
 	
-	cout << endl; 
-	cout << "Enter ID number of student to find (or X to exit): "; 
-	cin >> look4StudentID; 
+	
+	char c; 
+	do
+	{
+		int i = 0;
+		cout << endl;
+		cout << "Enter ID number of student to find (or X to exit): ";
+		cin >> look4StudentID;
+
+		while (look4StudentID[i] != '\0')
+		{
+			if (isalpha(look4StudentID[i]))
+			{
+				c = look4StudentID[i];
+				look4StudentID[i] = toupper(c);
+				i++;
+			}
+
+			else
+				i++; 
+		}
+ 
+		errorDetected = errorCheckStudentID(look4StudentID);
+
+	}
+
+	while (errorDetected == true);
 
 
-	errorCheckStudentID(look4StudentID);
+	if (look4StudentID == "X")
+	{
+		system("PAUSE");       // Program Assignment does not specify exit code or method "Enter ID number of student to find (or X to exit):"
+		exit(1);
+	}
 
+	else
+	{
+		validatedStudentID = look4StudentID; 
+	}
 
+	return validatedStudentID;
 
 
 }
 
-void errorCheckStudentID(string studentIDEntered)
+bool errorCheckStudentID(string studentIDEntered)
 {
-	bool errorCheckGood; 
-	int length; 
+	bool IDEntered2short;
+	bool IDEntered2Long;
+	bool IDEnteredFit;
+	bool loopUserInput;
+	bool userWants2Exit; 
 
-	length = studentIDEntered.length(); 
+	int alphaPlacementError = 0;
+	int integerPlacementError = 0;
+	int length;
+
+	length = studentIDEntered.length();
+
+	if (studentIDEntered == "X")
+	{
+		IDEntered2short = false;
+		IDEntered2Long = false;
+		IDEnteredFit = false;
+		userWants2Exit = true; 
+
+	}
+
 	
-	if (length < 8)
+	
+	else if (length < 8)
 	{
 		cout << "ERROR! Input " << studentIDEntered << " is not long enough. System Expected 8 characters." << endl << endl;
-		errorCheckGood = false; 
+		IDEntered2short = true;
+		IDEntered2Long = false;
+		IDEnteredFit = false;
+		userWants2Exit = false;
 	}
 
-	if (length > 8)
+
+	else if (length > 8)
 	{
 		cout << "ERROR! Input " << studentIDEntered << " is too long. System Expected 8 characters." << endl;
-		errorCheckGood = false;
-	}
-		
-	if (length = 8)
-	{
-		errorCheckGood = true;
+		IDEntered2Long = true;
+		IDEntered2short = false;
+		IDEnteredFit = false;
+		userWants2Exit = false;
 	}
 
-	for (int index = 0; index <2; index++)
+
+
+	else if (length = 8)
 	{
-		if (isalpha(studentIDEntered[index]))
+		IDEnteredFit = true;
+		IDEntered2Long = false;
+		IDEntered2short = false;
+		userWants2Exit = false;
+	}
+
+
+
+	if (IDEnteredFit == true)
+	{
+
+		for (int index = 0; index < 2; index++)         // Used Loops for error checking 
 		{
-			errorCheckGood = true;
+			if (!(isalpha(studentIDEntered[index])))
+			{
+				alphaPlacementError++;
+
+			}
+
 		}
 
-		else errorCheckGood = false;
-		 
+		for (int index = 2; index < 8; index++)        // used loops for error checking 
+		{
+			if (!(isdigit(studentIDEntered[index])))
+			{
+				integerPlacementError++;
+			}
+
+
+		}
+
+	}
+
+
+	if ((alphaPlacementError > 0) || (integerPlacementError > 0))
+	{
+		cout << endl;
+		cout << "ERROR!" << endl;
+		cout << "For Input \"" << studentIDEntered << "\", the letters and digits are not in the right places" << endl;
+		cout << "ID must be exactly 8 characters long, and formatted as : XX######" << endl;
+		cout << " 'X' equals Letter, '#' equals Number" << endl;
+
+	}
+
+	if ((IDEntered2short == true) || (IDEntered2Long == true) || (IDEnteredFit = false) || (alphaPlacementError > 0) || (integerPlacementError > 0))
+	{
+		loopUserInput = true; 
+	}
+
+	else if (userWants2Exit = true)
+	{
+		loopUserInput = false;
 	}
 	
+	return loopUserInput;
+
+}
+
+int runBinarySearch(string target, string searchList[], int listSize)
+{
+	
+	
+	int infoPlace = NOT_FOUND;                   // index where target found
+	int high, low, middle;
+
+	low = 0;                                     // lower bound of area to search
+	high = listSize - 1;                         // upper bound of area to search
+
+	while ((low <= high) &&                      // still places to search AND
+		(infoPlace == NOT_FOUND)) {           // target not yet found
+
+		middle = (low + high) / 2;            // calculate middle index
+
+		if (target < searchList[middle])      // target less than middle value
+			high = middle - 1;
+		else if (target > searchList[middle]) //target more than middle value
+			low = middle + 1;
+		else
+			infoPlace = middle;               // target found
+	}     // end while
+
+	return infoPlace;
+	
+
+
+
+}
+void sendResults2Console(int datalocation, string searchList[])
+
+
+
+{
+	cout << "The student with ID <<  
+
 
 }
