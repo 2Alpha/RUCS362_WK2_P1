@@ -1,10 +1,28 @@
 //***************************************************************************
 //  FILENAME:	 AllenAssn2.cpp
-//  DESCRIPTION: 
+//  DESCRIPTION: Program that will implement the following. 
+// 				 1. Read input file named CREDITS.txt
+//				 2. Convert the number of completed credits for all Undergraduate students"
+//				 3. create File called SORTED.TXT containing student ID and one corresponding class level per line.
+//				 4. Display List of available student ID ready to be searched.
+//				 5. Report a searchable student's class level in string form.
+//
 //  DATE:        9/4/15
 //  CLASS/TERM:  CS362_X40_Data Structures - CU_CS362 - XIN_X40_15F8W1
 //  DESIGNER:	 Andrae Allen
 //  FUNCTIONS:	 main - reads values, performs calculations, & displays results
+//               ProgramDescription - Displays a brief discription of the program
+//				 readAndSaveData - reads and saves specified data from txt file CREDITS.TXT
+//				 convertCredits - coverts the number of credits into a class level
+//				 convertClassLevel2String - coverts enumerated class level in string type class level 
+//				 sortStudentIDDesending - Sorts student ID's by decending order IE ZZ123456 to AA123456
+//				 sortStudentIDAscending -  Sorts student ID's by ascending order IE AA123456 to ZZ123456 
+//				 createSortedTextFile - Creates a data file containing student Id's and class levels in decending order
+//				 StudentIDNumsOnFile - Displays a list of all the Student ID numbers on file
+//				 studentIDSearch - reads user input for student ID to look up
+//				 errorCheckStudentID - Checks if user input for student ID meets the specified parameters 
+//				 runBinarySearch - runs binary search of student ID entered by user 
+//				 sendResults2Console - sends search results to console
 //***************************************************************************
 
 #include <iostream> 
@@ -15,14 +33,12 @@
 using namespace std;
 
 enum classLevel { Freshman, Sophomore, Junior, Senior, TooKool4Skool };
-classLevel convertCredits(int inputCredit); 
-
+classLevel convertCredits(int inputCredit);
 string convertClassLevel2String(classLevel enumeratedTypeValue);
 
 void ProgramDescription();
 void readAndSaveData(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex);
 
-void StoreUndergradData (string[], int[]);
 
 void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[], string classLevelAsString[]);
 void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[], string classLevelAsString[]);
@@ -38,9 +54,7 @@ int runBinarySearch(string target, string searchList[], int listSize);
 void sendResults2Console(string StudentID, int dataLocation, string alphaNumericList[], string classLevelAsString[]);
 
 
-
-
-const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
+const int MAX_ENTRIES = 1000; // Max number of student profiles that can be stored
 const int FRESHMAN_BOUNDARY = 32; 
 const int SOPHOMORE_BOUNDARY = 63;
 const int JUNIOR_BOUNDARY = 95;
@@ -54,8 +68,8 @@ const int END_OF_NUMBERS = 8;
 const int TWO = 2;
 const int ONE = 1; 
 
-const string INPUT_FILE_1_NAME = "CREDITS.txt"; // File name for input file
-const string OUTPUT_FILE_1_NAME = "SORTED.txt";
+const string INPUT_FILE_1_NAME = "CREDIT.txt"; // File name for input file, Assignment documentation refers to both "CREDIT.txt" amd  "CREDITS.txt";
+const string OUTPUT_FILE_1_NAME = "SORTED.txt"; // File name for output file 
 
 int main()
 {
@@ -72,12 +86,10 @@ int main()
 	ProgramDescription();
 	readAndSaveData(INPUT_FILE_1_NAME, StudentIDList, ClassLevelList, classLevelAsOVList, clasLevelAsString, CreditsList, numOfEntries);
 	
+
 	sortStudentIDDesending(numOfEntries, StudentIDList, classLevelAsOVList, clasLevelAsString);
 	createSortedTextFile(numOfEntries, StudentIDList, classLevelAsOVList);
 
-	
-	
-	
 	sortStudentIDAscending(numOfEntries, StudentIDList, classLevelAsOVList, clasLevelAsString);
 	StudentIDNumsOnFile(numOfEntries, StudentIDList);
 
@@ -129,15 +141,16 @@ void ProgramDescription()
 void readAndSaveData(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex)
 {
 	ifstream inputFile;                      // input file stream variable
-	bool fileOpenSuccess;
+	bool fileOpenSuccess;					// file open success 
 
-	string tempStudentID;
-	char tempStudentClassLevel;
-	int tempCredits;
+	string tempStudentID;					//  temp student id 
+	char tempStudentClassLevel;				// temp student class level 
+	int tempCredits;						// temp credits
 
 	studentIndex = ZERO;
 	inputFile.open(inputFileName.c_str());       // open the file
 
+	// If cannot open file
 	if (!inputFile)
 	{
 		fileOpenSuccess = false;
@@ -156,12 +169,12 @@ void readAndSaveData(string inputFileName, string studentID[], char studentClass
 	}
 
 
-
+	// while data remains to be read and max entries has not been reached
 	while ((inputFile) && (studentIndex < MAX_ENTRIES))
 	{
-		inputFile >> tempStudentID;
-		inputFile >> tempStudentClassLevel;
-		inputFile >> tempCredits;
+		inputFile >> tempStudentID;						// temp student Id 
+		inputFile >> tempStudentClassLevel;				// temp Student Class Level
+		inputFile >> tempCredits;						// temp credits
 		inputFile.ignore(IGNORE_AMOUNT, '\n');
 
 
@@ -202,7 +215,6 @@ void readAndSaveData(string inputFileName, string studentID[], char studentClass
 
 		inputFile.close();
 
-
 }
 
 //*************************************************************************
@@ -211,12 +223,12 @@ void readAndSaveData(string inputFileName, string studentID[], char studentClass
 //
 //  INPUT:        Parameters: inputCredit- the number of credits a student has  
 //
-//  OUTPUT: 	  Return value: classlevel
+//  OUTPUT: 	  Return value: classlevel - The Class Level of a specified student
 //*************************************************************************
 classLevel convertCredits(int inputCredit)
 {
 	
-	classLevel classDesignation; 
+	classLevel classDesignation;						// class Designation
 
 	if (inputCredit < FRESHMAN_BOUNDARY)
 	{
@@ -257,7 +269,7 @@ classLevel convertCredits(int inputCredit)
 //*************************************************************************
 string convertClassLevel2String(classLevel enumeratedTypeValue)
 {
-	string classLevelAsString; 
+	string classLevelAsString;									// class Level as String 
 
 	switch (enumeratedTypeValue)
 	{
@@ -275,7 +287,17 @@ string convertClassLevel2String(classLevel enumeratedTypeValue)
 
 }
 
-// Implementation of a selection sort
+//*************************************************************************
+//  FUNCTION:	  sortStudentIDDesending
+//  DESCRIPTION:  Sorts student ID's by decending order IE ZZ123456 to AA123456  
+//
+//  INPUT:        Parameters: numOfItems - Number of student ID's 
+//                            alphaNumericList - Alphanumeric list containing student ID's
+//                            enumeratedTypeValue - class level in enumerated form  
+//                            classLevelAsString -  class level in string form
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[], string classLevelAsString[])
 {
 	int currentTop,            // Current top of unsorted list
@@ -283,8 +305,8 @@ void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLeve
 		minPosition;       // Position of smallest value
 		
 	string tempString;              // Temp value for swapping
-	string tempClassLevelAsString;
-	classLevel tempClassLevel;
+	string tempClassLevelAsString;  // Temp value for swapping class level as string
+	classLevel tempClassLevel;		// Temp value for swapping class level 
 
 
 	// for each item in the list (top to bottom)
@@ -321,7 +343,17 @@ void sortStudentIDDesending(int numOfItems, string alphaNumericList[], classLeve
 	return;
 } // end selectionSort
 
-
+//*************************************************************************
+//  FUNCTION:	  sortStudentIDAscending
+//  DESCRIPTION:  Sorts student ID's by ascending order IE AA123456 to ZZ123456  
+//
+//  INPUT:        Parameters: numOfItems - Number of student ID's 
+//                            alphaNumericList - Alphanumeric list containing student ID's
+//                            enumeratedTypeValue - class level in enumerated form  
+//                            classLevelAsString -  class level in string form
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[], string classLevelAsString[])
 {
 	int currentTop,            // Current top of unsorted list
@@ -329,8 +361,8 @@ void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLeve
 		minPosition;       // Position of smallest value
 
 	string tempString;              // Temp value for swapping
-	string tempClassLevelAsString;
-	classLevel tempClassLevel;
+	string tempClassLevelAsString;		 // Temp value for swapping class level as string
+	classLevel tempClassLevel;			 // Temp value for swapping class level
 
 
 	// for each item in the list (top to bottom)
@@ -367,9 +399,20 @@ void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLeve
 	return;
 } // end selectionSort
 
+//*************************************************************************
+//  FUNCTION:	  createSortedTextFile
+//  DESCRIPTION:  Creates a data file containing student Id's and class levels in decending order
+//
+//  INPUT:        Parameters: inputFileName - text file containing studend data 
+//                            numOfItems - Number of student ID's 
+//                            alphaNumericList - Alphanumeric list containing student ID's
+//                            enumeratedTypeValue - Class level in enumerated form
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[])
 {
-	ofstream sortedList; 
+	ofstream sortedList;							// output file steam name
 	sortedList.open(OUTPUT_FILE_1_NAME.c_str());     // open file for writing
 	char skip = ' ';
 
@@ -385,32 +428,63 @@ void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel 
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  StudentIDNumsOnFile
+//  DESCRIPTION:  Displays a list of all the Student ID numbers on file 
+//
+//  INPUT:        Parameters: numOfItems - Number of student ID's                           
+//                            alphaNumericList - Alphanumeric list containing student ID's
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void StudentIDNumsOnFile (int numOfItems, string alphaNumericList[])
 {
-	int numOfColums = MAX_COLUMNS;
+	//int numOfColums = MAX_COLUMNS;
+	
 	
 	cout << "Student ID numbers on file are :" << endl;
 	int index = ZERO; 
 
+	int columns2Print;						// columns to print
+
+	// if number of items less than Max columns
+	if (numOfItems < MAX_COLUMNS)
+	{
+		columns2Print = numOfItems; 
+	}
+
+	else columns2Print = MAX_COLUMNS;
+
+	// while index less than number of items
 	while (index < numOfItems)
 	{
-		for (int columnPosition = ZERO; columnPosition < MAX_COLUMNS; columnPosition++)
+		for (int columnPosition = 0; columnPosition < columns2Print; columnPosition++) // columnPosition = column position
 
 		{
 			cout << alphaNumericList[index] << "    ";
 			index++;
 		}
-		cout << endl; 
-	}
+		cout << endl;
+		
+	} // end while
 
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  studentIDSearch
+//  DESCRIPTION:  reads user input for student ID to look up 
+//
+//  INPUT:        Parameters: user input from console 
+//
+//  OUTPUT: 	  Return value: properlyFormatedStudentID - A properly Formated sudent ID 
+//  CALLS TO      errorCheckStudentID
+//*************************************************************************
 string studentIDSearch()
 {
-	string look4StudentID;
-	string properlyFormatedStudentID;
-	bool errorDetected; 
+	string look4StudentID;					// student Id to look up
+	string properlyFormatedStudentID;		// properly formated student ID 
+	bool errorDetected;						// error detection flag
 	
 	
 	char c; 
@@ -421,8 +495,10 @@ string studentIDSearch()
 		cout << "Enter ID number of student to find (or X to exit): ";
 		cin >> look4StudentID;
 
+		// while array not equal null terminated
 		while (look4StudentID[i] != '\0')
 		{
+			// if character is a letter 
 			if (isalpha(look4StudentID[i]))
 			{
 				c = look4StudentID[i];
@@ -432,17 +508,18 @@ string studentIDSearch()
 
 			else
 				i++; 
-		}
+		} // end while loop
  
 		errorDetected = errorCheckStudentID(look4StudentID);
 
 	}
 
-	while (errorDetected == true);
+	while (errorDetected == true); // loop if error is detected in user input
 
 
 	if (look4StudentID == "X")
 	{
+		cout << endl << "Exit Code recieved, Program will now exit. Thank you." << endl;
 		system("PAUSE");       // Program Assignment does not specify exit code or method "Enter ID number of student to find (or X to exit):"
 		exit(1);
 	}
@@ -457,17 +534,25 @@ string studentIDSearch()
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  errorCheckStudentID
+//  DESCRIPTION:  Checks if user input for student ID meets the specified parameters 
+//
+//  INPUT:        Parameters: studentIDEntered - student ID entered by user                          
+//
+//  OUTPUT: 	  Return value: loopUserInput - should user input be repeated 
+//*************************************************************************
 bool errorCheckStudentID(string studentIDEntered)
 {
-	bool IDEntered2short;
-	bool IDEntered2Long;
-	bool IDEnteredFit;
-	bool loopUserInput;
-	bool userWants2Exit; 
+	bool IDEntered2short;				// ID Entered too short flag
+	bool IDEntered2Long;				// ID Entered too long flag
+	bool IDEnteredFit;					// ID Entered fit flag
+	bool loopUserInput;					// Loop user input flag
+	bool userWants2Exit;				// user wants to exit flag
 
-	int alphaPlacementError = ZERO;
-	int integerPlacementError = ZERO;
-	int length;
+	int alphaPlacementError = ZERO;		//alphabet letter placement error counter
+	int integerPlacementError = ZERO;	// digit placemnet error counter
+	int length;							// length of user input
 
 	length = studentIDEntered.length();
 
@@ -563,6 +648,16 @@ bool errorCheckStudentID(string studentIDEntered)
 
 }
 
+
+//*************************************************************************
+//  FUNCTION:	  runBinarySearch
+//  DESCRIPTION:  runs binary search of student ID entered by user  
+//
+//  INPUT:        Parameters: target - item to search for 
+//                            searchList - List to search for target in  
+//
+//  OUTPUT: 	  Return value: infoPlace - location where match was found
+//*************************************************************************
 int runBinarySearch(string target, string searchList[], int listSize)
 {
 	
@@ -592,6 +687,17 @@ int runBinarySearch(string target, string searchList[], int listSize)
 
 
 }
+
+//*************************************************************************
+//  FUNCTION:	  sendResults2Console
+//  DESCRIPTION:  sends search results to console
+//
+//  INPUT:        Parameters: studentID - Student ID being searched for 
+//                            dataLocation - index location of array where requested data is stored  
+//                            alphaNumericList - list of student ID's
+//                            classLevelAsString - class level as string
+//
+//  OUTPUT: 	  Return value: None
 void sendResults2Console(string StudentID, int dataLocation, string alphaNumericList[], string classLevelAsString[])
 
 
