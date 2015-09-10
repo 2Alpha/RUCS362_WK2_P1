@@ -20,7 +20,7 @@ classLevel convertCredits(int inputCredit);
 string convertClassLevel2String(classLevel enumeratedTypeValue);
 
 void ProgramDescription();
-void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex);
+void readAndSaveData(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex);
 
 void StoreUndergradData (string[], int[]);
 
@@ -29,12 +29,15 @@ void sortStudentIDAscending(int numOfItems, string alphaNumericList[], classLeve
 
 void createSortedTextFile(int numOfItems, string alphaNumericList[], classLevel enumeratedTypeValue[]);
 void StudentIDNumsOnFile(int numOfItems, string alphaNumericList[]);
+
+string studentIDSearch();
+bool errorCheckStudentID(string studentIDEntered);
+
 int runBinarySearch(string target, string searchList[], int listSize);
 
 void sendResults2Console(string StudentID, int dataLocation, string alphaNumericList[], string classLevelAsString[]);
 
-string studentIDSearch();
-bool errorCheckStudentID(string studentIDEntered);
+
 
 
 const int MAX_ENTRIES = 10; // Max number of student profiles that can be stored
@@ -50,7 +53,6 @@ const int END_OF_LETTERS = 2;
 const int END_OF_NUMBERS = 8;
 const int TWO = 2;
 const int ONE = 1; 
-
 
 const string INPUT_FILE_1_NAME = "CREDITS.txt"; // File name for input file
 const string OUTPUT_FILE_1_NAME = "SORTED.txt";
@@ -68,7 +70,7 @@ int main()
 
 	
 	ProgramDescription();
-	readDataFile1(INPUT_FILE_1_NAME, StudentIDList, ClassLevelList, classLevelAsOVList, clasLevelAsString, CreditsList, numOfEntries);
+	readAndSaveData(INPUT_FILE_1_NAME, StudentIDList, ClassLevelList, classLevelAsOVList, clasLevelAsString, CreditsList, numOfEntries);
 	
 	sortStudentIDDesending(numOfEntries, StudentIDList, classLevelAsOVList, clasLevelAsString);
 	createSortedTextFile(numOfEntries, StudentIDList, classLevelAsOVList);
@@ -103,19 +105,28 @@ int main()
 void ProgramDescription()
 {
 	cout << "Program to implement the following:" << endl;
-	cout << "1. Convert the number of completed credits for all Undergraduate students" << endl; 
-	cout << "   to class levels" << endl;
-	cout << "2. Make the data mentioned above searchable by student ID number" << endl; 
+	cout << "1. Read input file named CREDITS.txt " << endl;
+	cout << "2. Convert the number of completed credits for all Undergraduate students" << endl; 
+	cout << "3. create File called SORTED.TXT containing student ID and one corresponding class level per line." << endl;
+	cout << "4. Display List of available student ID ready to be searched"  << endl;
+	cout << "5. Report a searchable student's class level in string form" << endl; 
 }
 
 //*************************************************************************
-//  FUNCTION:	  Attempt2OpenFile
-//  DESCRIPTION:  
-
-//  INPUT:        Parameters:  
-//  OUTPUT: 	  Return value: fileOpenSuccess
+//  FUNCTION:	  readAndSaveData
+//  DESCRIPTION:  reads specified data from txt file CREDITS.TXT
+//
+//  INPUT:        Parameters: inputFileName - text file containing studend data 
+//                            studentID - array of student ID's 
+//                            studentClassLevel - array of student class Levels 
+//                            classLevelAsOrdinalValue - class levels as ordinal values 
+//                            classLevelAsString - class level as string
+//                            credits - number of credits
+//                            studentIndex - student index 
+//
+//  OUTPUT: 	  Return value: None
 //*************************************************************************
-void readDataFile1(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex)
+void readAndSaveData(string inputFileName, string studentID[], char studentClassLevel[], classLevel classLevelAsOrdinalValue[], string classLevelAsString[], int credits[], int& studentIndex)
 {
 	ifstream inputFile;                      // input file stream variable
 	bool fileOpenSuccess;
@@ -194,6 +205,14 @@ void readDataFile1(string inputFileName, string studentID[], char studentClassLe
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  convertCredits
+//  DESCRIPTION:  coverts the number of credits into a class level
+//
+//  INPUT:        Parameters: inputCredit- the number of credits a student has  
+//
+//  OUTPUT: 	  Return value: classlevel
+//*************************************************************************
 classLevel convertCredits(int inputCredit)
 {
 	
@@ -228,6 +247,14 @@ classLevel convertCredits(int inputCredit)
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  convertClassLevel2String
+//  DESCRIPTION:  coverts enumerated class level in string type class level 
+//
+//  INPUT:        Parameters: enumeratedTypeValue - enumerated value of data   
+//
+//  OUTPUT: 	  Return value: string, class level in plain text format 
+//*************************************************************************
 string convertClassLevel2String(classLevel enumeratedTypeValue)
 {
 	string classLevelAsString; 
